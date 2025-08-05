@@ -9,64 +9,114 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- Icons and Bootstrap -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .card {
+      border-radius: 1rem;
+    }
+
+    .footer {
+      background-color: #343a40;
+      color: white;
+    }
+
+    .footer a {
+      color: #ddd;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .copyright {
+      background-color: #212529;
+      color: white;
+    }
+
+    .form-control {
+      border-radius: 0.5rem;
+    }
+
+    .btn-primary {
+      border-radius: 0.5rem;
+    }
+  </style>
 </head>
 
 <body>
+
+  <!-- Navbar Start -->
+  <div class="container-fluid position-relative p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 shadow-sm">
+      <a href="index.html" class="navbar-brand p-0 fw-bold text-primary fs-4">MedRemind</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="fa fa-bars"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto py-0">
+          <a href="index.html" class="nav-item nav-link active">Home</a>
+          <a href="about.html" class="nav-item nav-link">About</a>
+          <a href="service.html" class="nav-item nav-link">Services</a>
+          <a href="remainder.html" class="nav-item nav-link">Reminder</a>
+        </div>
+        <a href="appointment.html" class="btn btn-primary text-white py-2 px-4 ms-lg-3">Book Appointment</a>
+      </div>
+    </nav>
+  </div>
+  <!-- Navbar End -->
+
+  <!-- Form Section -->
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h3 class="card-title text-center mb-4">Add Medication Reminder</h3>
-            <form id="reminderForm" class="mb-4">
-              <div class="mb-3">
-                <label for="userEmail" class="form-label">Email Address</label>
-                <input type="email" id="userEmail" class="form-control" required placeholder="e.g., user@example.com" />
+        <div class="card shadow-sm p-4">
+          <h3 class="card-title text-center mb-4">Add Medication Reminder</h3>
+          <form id="reminderForm" class="mb-4">
+            <div class="mb-3">
+              <label for="userEmail" class="form-label">Email Address</label>
+              <input type="email" id="userEmail" class="form-control" required placeholder="e.g., user@example.com" />
+            </div>
+            <div class="mb-3">
+              <label for="medicineName" class="form-label">Medicine Name</label>
+              <input type="text" id="medicineName" class="form-control" required placeholder="e.g., Paracetamol" />
+            </div>
+            <div class="mb-3">
+              <label for="medicineType" class="form-label">Type (Pill/Drop/Syrup etc.)</label>
+              <input type="text" id="medicineType" class="form-control" required placeholder="e.g., Pill" />
+            </div>
+            <div class="mb-3">
+              <label for="medicineQty" class="form-label">Quantity</label>
+              <input type="number" id="medicineQty" class="form-control" min="1" required placeholder="e.g., 2" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Times per day (Select times)</label>
+              <div id="timesContainer" class="d-flex flex-wrap gap-2">
+                <input type="time" class="form-control" name="medicineTimes" required style="max-width: 120px" />
+                <input type="time" class="form-control" name="medicineTimes" style="max-width: 120px" />
+                <input type="time" class="form-control" name="medicineTimes" style="max-width: 120px" />
               </div>
+              <small class="text-muted">Fill one or more times. Leave unused inputs empty.</small>
+            </div>
+            <div class="mb-3">
+              <label for="daysCount" class="form-label">Number of days to take medicine</label>
+              <input type="number" id="daysCount" class="form-control" min="1" value="1" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Add Reminder</button>
+          </form>
 
-              <div class="mb-3">
-                <label for="medicineName" class="form-label">Medicine Name</label>
-                <input type="text" id="medicineName" class="form-control" required placeholder="e.g., Paracetamol" />
-              </div>
-
-              <div class="mb-3">
-                <label for="medicineType" class="form-label">Type (Pill/Drop/Syrup etc.)</label>
-                <input type="text" id="medicineType" class="form-control" required placeholder="e.g., Pill" />
-              </div>
-
-              <div class="mb-3">
-                <label for="medicineQty" class="form-label">Quantity</label>
-                <input type="number" id="medicineQty" class="form-control" min="1" required placeholder="e.g., 2" />
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Times per day (Select times)</label>
-                <div id="timesContainer" class="d-flex flex-wrap gap-2">
-                  <input type="time" class="form-control" name="medicineTimes" required style="max-width: 120px" />
-                  <input type="time" class="form-control" name="medicineTimes" style="max-width: 120px" />
-                  <input type="time" class="form-control" name="medicineTimes" style="max-width: 120px" />
-                </div>
-                <small class="text-muted">Fill one or more times. Leave unused inputs empty.</small>
-              </div>
-
-              <div class="mb-3">
-                <label for="daysCount" class="form-label">Number of days to take medicine</label>
-                <input type="number" id="daysCount" class="form-control" min="1" value="1" required />
-              </div>
-
-              <button type="submit" class="btn btn-primary w-100">Add Reminder</button>
-            </form>
-
-            <h5>Scheduled Reminders (Frontend Only)</h5>
-            <ul id="reminderList" class="list-group"></ul>
-          </div>
+          <h5 class="mt-4">Scheduled Reminders (Frontend Only)</h5>
+          <ul id="reminderList" class="list-group"></ul>
         </div>
       </div>
     </div>
@@ -75,6 +125,39 @@
   <!-- Notification Sound -->
   <audio id="alarmSound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
 
+  <!-- Footer Start -->
+  <div class="container-fluid footer py-5 mt-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <h5 class="text-white mb-4">Quick Links</h5>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> About Us</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Contact Us</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Privacy Policy</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <h5 class="text-white mb-4">Services</h5>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> All Services</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Physiotherapy</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Diagnostics</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Manual Therapy</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Massage Therapy</a><br>
+          <a href="#"><i class="fas fa-angle-right me-2"></i> Rehabilitation</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer End -->
+
+  <!-- Copyright -->
+  <div class="container-fluid copyright py-3">
+    <div class="container text-center">
+      <span>&copy; 2025 MedRemind. All rights reserved.</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script>
     const reminders = [];
 
@@ -90,12 +173,9 @@
       const type = document.getElementById("medicineType").value.trim();
       const qty = parseInt(document.getElementById("medicineQty").value);
       const daysCount = parseInt(document.getElementById("daysCount").value);
-
       const timeInputs = Array.from(
         document.querySelectorAll("input[name='medicineTimes']")
-      )
-        .map((input) => input.value)
-        .filter((time) => time.trim() !== "");
+      ).map((input) => input.value).filter((time) => time.trim() !== "");
 
       if (timeInputs.length === 0) {
         alert("Please specify at least one time to take the medicine.");
@@ -124,11 +204,10 @@
             sent: false
           };
           remindersToSend.push(reminder);
-          reminders.push(reminder); // For frontend display
+          reminders.push(reminder);
         });
       }
 
-      // Send to backend
       try {
         const response = await fetch("http://localhost:3000/api/reminders", {
           method: "POST",
@@ -159,20 +238,15 @@
       }
 
       reminders
-        .sort((a, b) => {
-          if (a.date !== b.date) return a.date < b.date ? -1 : 1;
-          return a.time < b.time ? -1 : 1;
-        })
+        .sort((a, b) => (a.date !== b.date ? a.date < b.date ? -1 : 1 : a.time < b.time ? -1 : 1))
         .forEach((reminder) => {
           const li = document.createElement("li");
           li.className = "list-group-item d-flex justify-content-between align-items-center";
-
           li.innerHTML = `
             <div>
               <strong>${reminder.name}</strong> — ${reminder.qty} ${reminder.type}<br/>
               <span class="text-primary">${reminder.date}</span> at <span class="text-success">${reminder.time}</span>
-            </div>
-          `;
+            </div>`;
           ul.appendChild(li);
         });
     }
