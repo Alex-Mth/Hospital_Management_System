@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up / Log In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #7b2ff7, #f107a3);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1500px;
+    }
+
+    .auth-wrapper {
+      width: 400px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 0;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+      background: #e0e0e0;
+      font-weight: bold;
+      border-radius: 10px 10px 0 0;
+      transition: background 0.3s;
+    }
+
+    .tab.active {
+      background: #000;
+      color: white;
+    }
+
+    .flip-card {
+      width: 100%;
+      height: 520px;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      background: white;
+    }
+
+    .flip-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .form-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 30px;
+      box-sizing: border-box;
+      border-radius: 0 0 15px 15px;
+    }
+
+    #login-form {
+      transform: rotateY(180deg);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .name-fields {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"] {
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .submit-btn {
+      padding: 12px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <!-- Make login-tab active and signup-tab inactive -->
+<div class="tabs">
+    <button class="tab" id="signup-tab">Sign Up</button>
+    <button class="tab active" id="login-tab">Log In</button>
+  </div>
+  
+
+    <div class="flip-card flipped" id="flip-card">
+      <div class="flip-inner">
+        <!-- Sign Up Form -->
+        <div class="form-container" id="signup-form">
+          <h2>Sign Up</h2>
+          <form>
+            <div class="name-fields">
+              <input type="text" placeholder="First name" required>
+              <input type="text" placeholder="Last name" required>
+            </div>
+            <input type="text" placeholder="Username" required>
+            <input type="email" placeholder="Email address" required>
+            <input type="tel" placeholder="Phone number" required>
+            <input type="password" placeholder="Password" required>
+            <input type="password" placeholder="Confirm password" required>
+            <button type="submit" class="submit-btn">Sign Up</button>
+          </form>
+        </div>
+
+        <!-- Log In Form -->
+        <div class="form-container" id="login-form">
+          <h2>Log In</h2>
+          <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit" class="submit-btn">Log In</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const signupTab = document.getElementById('signup-tab');
+      const loginTab = document.getElementById('login-tab');
+      const flipCard = document.getElementById('flip-card');
+  
+      signupTab.addEventListener('click', () => {
+        signupTab.classList.add('active');
+        loginTab.classList.remove('active');
+        flipCard.classList.remove('flipped');
+      });
+  
+      loginTab.addEventListener('click', () => {
+        loginTab.classList.add('active');
+        signupTab.classList.remove('active');
+        flipCard.classList.add('flipped');
+      });
+  
+      document.getElementById('loginForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+  
+        if (username === 'admin' && password === 'admin123') {
+          alert('Welcome Admin!');
+          
+          window.location.href = 'admin.html';
+        } else if (username === 'user' && password === 'user123') {
+          alert('Welcome User!');
+        
+          window.location.href = 'index.html';
+        } else {
+          alert('Invalid username or password!');
+        }
+      });
+    });
+  </script>
+  
+
+</body>
+</html>
