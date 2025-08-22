@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sign Up / Log In</title>
+  <title>Auth Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
@@ -76,7 +76,7 @@
       border-radius: 0 0 15px 15px;
     }
 
-    #login-form {
+    #signin-form {
       transform: rotateY(180deg);
     }
 
@@ -117,83 +117,126 @@
 <body>
 
   <div class="auth-wrapper">
-    <!-- Make login-tab active and signup-tab inactive -->
-<div class="tabs">
-    <button class="tab" id="signup-tab">Sign Up</button>
-    <button class="tab active" id="login-tab">Log In</button>
-  </div>
-  
+    <div class="tabs">
+      <button class="tab active" id="signup-tab">Sign Up</button>
+      <button class="tab" id="signin-tab">Sign In</button>
+    </div>
 
-    <div class="flip-card flipped" id="flip-card">
+    <div class="flip-card" id="flip-card">
       <div class="flip-inner">
         <!-- Sign Up Form -->
         <div class="form-container" id="signup-form">
           <h2>Sign Up</h2>
-          <form>
+          <form id="signupForm">
             <div class="name-fields">
-              <input type="text" placeholder="First name" required>
-              <input type="text" placeholder="Last name" required>
+              <input type="text" id="firstName" placeholder="First name" required>
+              <input type="text" id="lastName" placeholder="Last name" required>
             </div>
-            <input type="text" placeholder="Username" required>
-            <input type="email" placeholder="Email address" required>
-            <input type="tel" placeholder="Phone number" required>
-            <input type="password" placeholder="Password" required>
-            <input type="password" placeholder="Confirm password" required>
+            <input type="text" id="signupUsername" placeholder="Username" required>
+            <input type="email" id="email" placeholder="Email address" required>
+            <input type="tel" id="number" placeholder="Phone number" required pattern="[0-9]{10}">
+            <input type="password" id="signupPassword" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm password" required>
             <button type="submit" class="submit-btn">Sign Up</button>
           </form>
         </div>
 
-        <!-- Log In Form -->
-        <div class="form-container" id="login-form">
-          <h2>Log In</h2>
-          <form id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Username" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" class="submit-btn">Log In</button>
+        <!-- Sign In Form -->
+        <div class="form-container" id="signin-form">
+          <h2>Sign In</h2>
+          <form id="signinForm">
+            <input type="text" id="signinUsername" placeholder="Username" required>
+            <input type="password" id="signinPassword" placeholder="Password" required>
+            <button type="submit" class="submit-btn">Sign In</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const signupTab = document.getElementById('signup-tab');
-      const loginTab = document.getElementById('login-tab');
-      const flipCard = document.getElementById('flip-card');
-  
-      signupTab.addEventListener('click', () => {
-        signupTab.classList.add('active');
-        loginTab.classList.remove('active');
-        flipCard.classList.remove('flipped');
-      });
-  
-      loginTab.addEventListener('click', () => {
-        loginTab.classList.add('active');
-        signupTab.classList.remove('active');
-        flipCard.classList.add('flipped');
-      });
-  
-      document.getElementById('loginForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const username = document.getElementById('loginUsername').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-  
-        if (username === 'admin' && password === 'admin123') {
-          alert('Welcome Admin!');
-          
-          window.location.href = 'admin.html';
-        } else if (username === 'user' && password === 'user123') {
-          alert('Welcome User!');
-        
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const signupTab = document.getElementById('signup-tab');
+    const signinTab = document.getElementById('signin-tab');
+    const flipCard = document.getElementById('flip-card');
+
+    // Toggle forms
+    signupTab.addEventListener('click', () => {
+      signupTab.classList.add('active');
+      signinTab.classList.remove('active');
+      flipCard.classList.remove('flipped');
+    });
+
+    signinTab.addEventListener('click', () => {
+      signinTab.classList.add('active');
+      signupTab.classList.remove('active');
+      flipCard.classList.add('flipped');
+    });
+    
+    // Handle Signin
+    document.getElementById('signinForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('signinUsername').value.trim();
+      const password = document.getElementById('signinPassword').value.trim();
+
+      try {
+        const res = await fetch('http://localhost:3000/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const result = await res.json();
+        if (res.ok && result.message === "Signin successful!") {
+          alert('Signin successful!');
           window.location.href = 'index.html';
         } else {
-          alert('Invalid username or password!');
+          alert(result.message || 'Signin failed');
         }
-      });
+      } catch (err) {
+        alert('An error occurred: ' + err.message);
+      }
     });
-  </script>
-  
+
+    // Handle Signup
+    document.getElementById('signupForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        number: document.getElementById('number').value,
+        email: document.getElementById('email').value,
+        username: document.getElementById('signupUsername').value,
+        password: document.getElementById('signupPassword').value
+      };
+
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      if (data.password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          alert(result.message || 'Signup successful!');
+          document.getElementById('signupForm').reset();
+        } else {
+          alert(result.message || 'Signup failed');
+        }
+      } catch (err) {
+        alert('An error occurred: ' + err.message);
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
