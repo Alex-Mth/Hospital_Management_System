@@ -4,6 +4,7 @@ const cors = require('cors');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
+const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
@@ -12,35 +13,33 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// ------------------ DATABASE CONNECTION ------------------
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: "hospitalDB"   // 👈 force mongoose to use hospitalDB
+  dbName: "hospitalDB"   // force mongoose to use hospitalDB
 })
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("MongoDB connection error:", err));
 
-// User Schema
-const userSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName:  { type: String, required: true },
-  number:    { type: String, required: true },
-  email:     { type: String, required: true },
-  username:  { type: String, required: true },
-  password:  { type: String, required: true }
-});
-const User = mongoose.model("User", userSchema);
+// ------------------ MODELS ------------------
+const User = require("./models/user");     // ✅ import User model
+const Doctor = require("./models/Doctor"); // ✅ import Doctor model
 
-// Signup endpoint
+
+// ------------------ AUTH ROUTES ------------------
 app.post("/signup", async (req, res) => {
   try {
     const { firstName, lastName, number, email, username, password } = req.body;
+
     const existingUser = await User.findOne({ username });
-    if (existingUser) return res.status(400).json({ message: "Username already exists" });
+    if (existingUser) {
+      return res.status(400).json({ message: "Username already exists" });
+    }
 
     const newUser = new User({ firstName, lastName, number, email, username, password });
-    await newUser.save();
+    await newUser.save();  // 👈 saves into MongoDB
+
     res.json({ message: "Signup successful!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -48,8 +47,6 @@ app.post("/signup", async (req, res) => {
 });
 
 
-
-// Signin endpoint
 app.post("/signin", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -62,13 +59,10 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-
-
 // ------------------ REMINDER SYSTEM ------------------
 let reminders = [];
 const filePath = 'reminders.json';
 
-// Load or initialize reminders
 if (fs.existsSync(filePath)) {
   reminders = JSON.parse(fs.readFileSync(filePath));
 } else {
@@ -79,7 +73,6 @@ function saveReminders() {
   fs.writeFileSync(filePath, JSON.stringify(reminders, null, 2));
 }
 
-// Nodemailer setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -105,16 +98,14 @@ function sendEmail(reminder) {
   });
 }
 
-// Reset sent flag at midnight
+// Reset at midnight
 cron.schedule('0 0 * * *', () => {
-  reminders.forEach(reminder => {
-    reminder.sent = false;
-  });
+  reminders.forEach(r => r.sent = false);
   saveReminders();
   console.log('🔄 Reset sent status for all reminders.');
 });
 
-// Check reminders every minute
+// Check every minute
 cron.schedule('* * * * *', () => {
   const nowTime = new Date().toTimeString().slice(0, 5);
   let updated = false;
@@ -132,18 +123,56 @@ cron.schedule('* * * * *', () => {
 
 app.post('/api/reminders', (req, res) => {
   const newReminders = req.body;
-
   if (!Array.isArray(newReminders)) {
     return res.status(400).json({ error: 'Expected an array of reminders' });
   }
-
-  newReminders.forEach(reminder => {
-    reminder.sent = false;
-  });
-
+  newReminders.forEach(r => r.sent = false);
   reminders.push(...newReminders);
   saveReminders();
   res.status(200).json({ message: '✅ Reminders saved successfully' });
+});
+
+// ------------------ DOCTOR ROUTES ------------------
+// Multer setup
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// Add Doctor
+app.post("/api/doctor", upload.single("photo"), async (req, res) => {
+  try {
+    const { name, specialization, experience, email, phone } = req.body;
+    const doctor = new Doctor({
+      name,
+      specialization,
+      experience,
+      email,
+      phone,
+      photo: req.file ? {
+        data: req.file.buffer,
+        contentType: req.file.mimetype
+      } : null
+    });
+
+    await doctor.save();
+    res.json({ message: "Doctor added successfully", doctor });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Fetch Doctor Photo
+app.get("/api/doctor/:id/photo", async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor || !doctor.photo || !doctor.photo.data) {
+      return res.status(404).send("Photo not found");
+    }
+    res.set("Content-Type", doctor.photo.contentType);
+    res.send(doctor.photo.data);
+  } catch (err) {
+    res.status(500).send("Error fetching photo");
+  }
 });
 
 // ------------------ START SERVER ------------------
