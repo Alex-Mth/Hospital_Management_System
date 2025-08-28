@@ -64,6 +64,17 @@
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Services</a>
                         <a href="remainder.html" class="nav-item nav-link">Reminder</a>
+                       <li class="nav-item dropdown" id="authMenu">
+  <!-- By default show Signup -->
+  <a class="nav-link" href="signup.html" id="authLink">
+    <i class="bi bi-person-circle"></i> Signup
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+    <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="logout.html">Logout</a></li>
+  </ul>
+</li>
 
                     </div>
                     <a href="appointment.html" class="btn btn-primary rounded-pill text-white py-2 px-4 flex-wrap flex-sm-shrink-0">Book Appointment</a>
@@ -505,6 +516,48 @@
               });
             });
           </script>
+
+          <script>
+// Example: check login status using localStorage
+document.addEventListener("DOMContentLoaded", function () {
+  const authNav = document.getElementById("authNav");
+
+  // Assume token is stored in localStorage after login
+  const token = localStorage.getItem("authToken");
+
+  if (token) {
+    // User is logged in → show Profile dropdown
+    authNav.innerHTML = `
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+           data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle"></i> Profile
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="profile.html">Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </li>
+    `;
+
+    // Handle logout
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+      localStorage.removeItem("authToken"); // clear token
+      window.location.href = "login.html"; // redirect to login
+    });
+
+  } else {
+    // User is not logged in → show Signup link
+    authNav.innerHTML = `
+      <li class="nav-item">
+        <a href="signup.html" class="nav-link">Signup</a>
+      </li>
+    `;
+  }
+});
+</script>
+
             
               // ❷  Toggle on “Read More / Less”
               <script>

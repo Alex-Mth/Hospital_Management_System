@@ -175,28 +175,31 @@
     
     // Handle Signin
     document.getElementById('signinForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const username = document.getElementById('signinUsername').value.trim();
-      const password = document.getElementById('signinPassword').value.trim();
+  event.preventDefault();
+  const username = document.getElementById('signinUsername').value.trim();
+  const password = document.getElementById('signinPassword').value.trim();
 
-      try {
-        const res = await fetch('http://localhost:3000/api/auth/signin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-
-        const result = await res.json();
-        if (res.ok && result.message === "Signin successful!") {
-          alert('Signin successful!');
-          window.location.href = 'index.html';
-        } else {
-          alert(result.message || 'Signin failed');
-        }
-      } catch (err) {
-        alert('An error occurred: ' + err.message);
-      }
+  try {
+    const res = await fetch('http://localhost:3000/api/auth/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
     });
+
+    const result = await res.json();
+    if (res.ok && result.message === "Signin successful!") {
+      // ✅ Save auth token in browser
+      localStorage.setItem("authToken", result.token);
+
+      alert('Signin successful!');
+      window.location.href = 'index.html';
+    } else {
+      alert(result.message || 'Signin failed');
+    }
+  } catch (err) {
+    alert('An error occurred: ' + err.message);
+  }
+});
 
     // Handle Signup
     document.getElementById('signupForm').addEventListener('submit', async (event) => {

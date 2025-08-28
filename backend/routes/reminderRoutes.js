@@ -21,8 +21,8 @@ function saveReminders() {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER || "alexmathew1208@gmail.com",
-    pass: process.env.EMAIL_PASS || "your-app-password"
+    user: process.env.EMAIL_USER || "namitharosepulikkottil@gmail.com",
+    pass: process.env.EMAIL_PASS || "zzdroshokhtftvjw"
   }
 });
 

@@ -67,4 +67,16 @@ router.get("/dept", async (req, res) => {
   }
 });
 
+router.get('/deptid', async (req, res) => {
+  try {
+    const { department } = req.query;
+    let filter = {};
+    if (department) filter = { department }; // Only doctors in that department
+    const doctors = await Doctor.find(filter);
+    res.json(doctors);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

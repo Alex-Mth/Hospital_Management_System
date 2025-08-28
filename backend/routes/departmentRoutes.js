@@ -1,7 +1,7 @@
 // backend/routes/departmentRoutes.js
 const express = require("express");
 const Department = require("../models/Department");
-const Doctor = require("../models/Doctor");
+const Doctor = require("../models/Doctor.js");
 
 const router = express.Router();
 
